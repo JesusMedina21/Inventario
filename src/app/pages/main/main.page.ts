@@ -5,39 +5,38 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
-  selector: 'app-main', 
+  selector: 'app-main',
   templateUrl: './main.page.html',
   styleUrls: ['./main.page.scss'],
 })
 export class MainPage implements OnInit {
 
   pages = [
-    { title: 'Productos', url: '/main/home', icon: 'home-outline'},
-    { title: 'Perfil', url: '/main/profile', icon: 'person-outline'},
-    { title: 'Historial', url: '/main/historial', icon: 'grid-outline'},
-    { title: 'Soporte Tecnico', url: '/main/condiciones', icon: 'book-outline'},
-    //{ title: 'Web', url: 'https://la-perla-del-oriente.web.app/', icon: 'globe-outline'},
-   { title: 'APK', url: 'https://drive.google.com/file/d/1OWO2uanzPtBOFOyPRgTt8M894aoLzh_S/view?usp=sharing', icon: 'logo-android'},
-   
+    { title: 'Productos', url: '/main/home', icon: 'home-outline' },
+    { title: 'Perfil', url: '/main/profile', icon: 'person-outline' },
+    { title: 'Historial', url: '/main/historial', icon: 'grid-outline' },
+    { title: 'Web', url: 'https://tuinventario.vercel.app/', icon: 'globe-outline'},
+    //{ title: 'APK', url: 'https://drive.google.com/file/d/1OWO2uanzPtBOFOyPRgTt8M894aoLzh_S/view?usp=sharing', icon: 'logo-android' },
+
   ]
 
   router = inject(Router);
 
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
-  
+
 
   currentPath: string = '';
 
   ngOnInit() {
-    this.router.events.subscribe((event:any) => {
-      if(event?.url) this.currentPath = event.url;
+    this.router.events.subscribe((event: any) => {
+      if (event?.url) this.currentPath = event.url;
 
     })
   }
-  
+
   user(): User {
-   return this.utilsSvc.getFromLocalStorage('user');
+    return this.utilsSvc.getFromLocalStorage('user');
   }
 
 

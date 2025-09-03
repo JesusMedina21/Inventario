@@ -1,5 +1,5 @@
 {
-  "name": "Inventario",
+  "name": "TuInventario",
   "version": "0.0.1",
   "author": "Copyright © jesusmedina0921@gmail.com. All rights reserved.",
   "homepage": "https://portafoliojesusmedina.vercel.app/",
@@ -66,5 +66,5 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.2.2"
   },
-  "description": "Inventario by jesusmedina0921@gmail.com"
+  "description": "TuInventario by jesusmedina0921@gmail.com"
 }

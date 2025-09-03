@@ -24,12 +24,12 @@ export class CategoriaPage implements OnInit {
   isConnected: boolean = navigator.onLine;
   searchTerm: string = ''; // Propiedad para el término de búsqueda
   filteredCategorias: Categoria[] = []; // Lista filtrada de categorías
- 
+
   clearSearch() {
     this.searchTerm = ''; // Restablece el término de búsqueda
     this.filteredCategorias = [...this.allCategorias]; // Muestra todas las categorías
   }
- 
+
   filterCategorias() {
     if (this.searchTerm.trim() !== '') {
       const searchTermLower = this.searchTerm.toLowerCase(); // Convertir el término de búsqueda a minúsculas
@@ -43,7 +43,7 @@ export class CategoriaPage implements OnInit {
 
   constructor(
     private changeDetector: ChangeDetectorRef
-  ) {this.initializeNetworkEvents();}
+  ) { this.initializeNetworkEvents(); }
 
   initializeNetworkEvents() {
     // Check initial connection status
@@ -51,13 +51,13 @@ export class CategoriaPage implements OnInit {
 
     // Add event listeners for online and offline events
     window.addEventListener('online', () => {
-      console.log('Conectado a Internet');
+      //console.log('Conectado a Internet');
       this.isConnected = true;
       this.changeDetector.detectChanges(); // Notify Angular of the change
     });
 
     window.addEventListener('offline', () => {
-      console.log('Conexión a Internet perdida');
+      //console.log('Conexión a Internet perdida');
       this.isConnected = false;
       this.changeDetector.detectChanges(); // Notify Angular of the change
     });
@@ -75,16 +75,18 @@ export class CategoriaPage implements OnInit {
   }
   //Reiniciar pagina
   doRefresh(event) {
-    
+
     setTimeout(() => {
-     this.getCategorias(),
-      event.target.complete();
+      this.getCategorias(),
+        event.target.complete();
     }, 1000);
   }
 
   //Orden de categorias
   getCategorias() {
-    let path = `categorias`;
+
+    let path = `usuarios/${this.user().uid}/categorias`;
+    //let path = `categorias`;
     this.loading = true;
     let query = [
       orderBy('nombre', 'desc'),
@@ -100,7 +102,7 @@ export class CategoriaPage implements OnInit {
           this.loading = false;
         },
         error: (error) => {
-          console.error('Error al obtener los productos:', error);
+          //console.error('Error al obtener los productos:', error);
           // Manejar los errores apropiadamente
         },
       });
@@ -123,88 +125,88 @@ export class CategoriaPage implements OnInit {
       componentProps: { categoria }
     })
 
-    if(success) this.getCategorias();
-    }
-
-
-async confirmDeleteCategoria(categoria: Categoria) {
-   
-  if (!this.isConnected) {
-    this.utilsSvc.presentToast({
-      message: 'Sin conexión a Internet. Por favor, intente más tarde.',
-      duration: 2000,
-      color: 'danger',
-      position: 'middle',
-      icon: 'alert-circle-outline'
-    });
-    return; // Exit if there is no connection
+    if (success) this.getCategorias();
   }
 
-  this.utilsSvc.presentAlert({
-    header: 'Borrar Categoria',
-    message: 'Esta seguro de borrar la categoria? Esta accion es inremediable!',
-    mode: 'ios',
-    buttons: [
-      {
-        text: 'Cancelar',
-      }, {
-        text: 'Borrar',
-        handler: () => {
-          this.deleteCategoria(categoria)
+
+  async confirmDeleteCategoria(categoria: Categoria) {
+
+    if (!this.isConnected) {
+      this.utilsSvc.presentToast({
+        message: 'Sin conexión a Internet. Por favor, intente más tarde.',
+        duration: 2000,
+        color: 'danger',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+      return; // Exit if there is no connection
+    }
+
+    this.utilsSvc.presentAlert({
+      header: 'Borrar Categoria',
+      message: 'Esta seguro de borrar la categoria? Esta accion es inremediable!',
+      mode: 'ios',
+      buttons: [
+        {
+          text: 'Cancelar',
+        }, {
+          text: 'Borrar',
+          handler: () => {
+            this.deleteCategoria(categoria)
+          }
         }
-      }
-    ]
-  });
+      ]
+    });
 
-}
-
-
-//Eliminar producto
-async deleteCategoria(categoria: Categoria){
+  }
 
 
- // let path = `usuarios/${this.user().uid}/categorias/${categoria.id}`;
- let path = `categorias/${categoria.id}` 
-
-  const loading = await this.utilsSvc.loading();
-  await loading.present();
+  //Eliminar producto
+  async deleteCategoria(categoria: Categoria) {
 
 
-  
-  
-  this.firebaseSvc.deleteDocument(path).then(async res => {
+    let path = `usuarios/${this.user().uid}/categorias/${categoria.id}`;
+    //let path = `categorias/${categoria.id}`
 
-  this.categorias = this.categorias.filter(p => p.id != categoria.id ); 
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
 
-    this.utilsSvc.presentToast({ 
-      message: 'Categoria eliminada exitosamente',
-      duration: 1500,
-      color: 'success',
-      position: 'middle',
-      icon: 'checkmark-circle-outline'
+
+
+
+    this.firebaseSvc.deleteDocument(path).then(async res => {
+
+      this.categorias = this.categorias.filter(p => p.id != categoria.id);
+
+      this.utilsSvc.presentToast({
+        message: 'Categoria eliminada exitosamente',
+        duration: 1500,
+        color: 'success',
+        position: 'middle',
+        icon: 'checkmark-circle-outline'
+      })
+      //Codigo de error 
+
+
+    }).catch(error => {
+      //console.log(error);
+
+
+      this.utilsSvc.presentToast({
+        message: error.message,
+        duration: 1500,
+        color: 'danger',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      })
+      //Codigo de error 
+
+    }).finally(() => {
+      loading.dismiss();
     })
-    //Codigo de error 
 
-   
-  }).catch(error => {
-    console.log(error);
+  }
 
 
-  this.utilsSvc.presentToast({ 
-    message: error.message,
-    duration: 1500,
-    color: 'danger',
-    position: 'middle',
-    icon: 'alert-circle-outline'
-  })
-  //Codigo de error 
-
-  }).finally(() => {
-    loading.dismiss();
-  })
-
-}
-
-  
 
 }

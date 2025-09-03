@@ -46,7 +46,7 @@ export class ForgotPasswordPage implements OnInit {
 
 
       }).catch(error => {
-        console.log(error);
+        //console.log(error);
 
 
         this.utilsSvc.presentToast({

@@ -1,27 +1,23 @@
-<app-header class="ion-text-center" title="¡Bienvenido a la Aplicacion!"></app-header>
+<app-header class="ion-text-center" title="¡Bienvenido a la Plataforma!"></app-header>
 <ion-content>
 
-  
+
   <div class="d-flex-center">
 
- 
 
-    <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()" >
-      
+
+    <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+
       <app-logo></app-logo>
 
-     
-      
-      
-     <p>Correo: admin&#64;gmail.com <br> Contraseña: adminadmin</p>
-   
-      <app-custom-input autocomplete="email" 
-      icon="mail-outline" 
-      [control]="form.controls.email"
-      type="email"
-      label="Correo">
+
+
+
+
+      <app-custom-input autocomplete="email" icon="mail-outline" [control]="form.controls.email" type="email"
+        label="Correo">
       </app-custom-input>
-  
+
       <div class="validators" *ngIf="form.controls.email.errors && form.controls.email.touched">
 
         <div *ngIf="form.controls.email.errors?.['required']">Este campo es requerido</div>
@@ -30,13 +26,9 @@
 
       </div>
 
-      <app-custom-input 
-  
-      [control]="form.controls.password"
-      icon="lock-closed-outline"
-      type="password"
-      label="Contraseña">
-  
+      <app-custom-input [control]="form.controls.password" icon="lock-closed-outline" type="password"
+        label="Contraseña">
+
       </app-custom-input>
 
 
@@ -46,27 +38,28 @@
         <div *ngIf="form.controls.password.errors?.['minlength']">Este campo necesita minimo 8 caracteres</div>
 
       </div>
-      
-  
+
+
       <p routerLink="forgot-password" class="background-style">Recuperar Contraseña</p>
 
-      <ion-button color="primary"   expand="block" mode="md" class="submit" type="submit" [disabled]="form.invalid" >
+      <ion-button color="primary" expand="block" mode="md" class="submit" type="submit" [disabled]="form.invalid">
         Ingresar
         <ion-icon slot="end" name="log-in-outline"></ion-icon> <!--Icono-->
       </ion-button>
-     
-      <!----
-         <ion-button color="secondary"   class="ion-margin-top" expand="block" routerLink="sign-up" routerLinkActive="router-link-active"  mode="md" fill="outline" >
-          Registrarse
-          <ion-icon slot="end" name="person-add-outline"></ion-icon> 
-        </ion-button>
-     
-      -->    
-     
-        <br><br><br><br>
-  
-      </form>
-    
+
+
+      <ion-button color="secondary" class="ion-margin-top" expand="block" routerLink="sign-up"
+        routerLinkActive="router-link-active" mode="md" fill="outline">
+        Registrarse
+        <ion-icon slot="end" name="person-add-outline"></ion-icon>
+      </ion-button>
+
+
+
+      <br><br><br><br>
+
+    </form>
+
 
 
   </div>

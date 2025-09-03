@@ -1,12 +1,12 @@
-# Licoreria Inventario
+# TuInventario
 
-Plataforma Web y Movil de control de Inventario para el Abasto y Licoreria Medina Ramirez. El Frontend fue desarrollado en Ionic con Angular y desplegado en Vercel. Se utilizo Firebase como Backend a traves de sus funcionalidades de BaaS como autenticacion de usuarios, Base de datos NoSQL, recuperacion de emails y contraseñas, envios de emails etc...  
+Plataforma Web y Movil de control de Tu Inventario. El Frontend fue desarrollado en Ionic con Angular y desplegado en Vercel. Se utilizo Firebase como Backend a traves de sus funcionalidades de BaaS como autenticacion de usuarios, Base de datos NoSQL, recuperacion de emails y contraseñas, envios de emails etc...  
 
 ## Funcionalidad
 
-Esta plataforma te permite llevar el control del Inventario del Abasto y Licoreria Medina Ramirez, indicando la cantidad de mercancia actual, precios, dinero en Inventario etc... Incluye un apartado de Historial de movimientos con reportes en PDFs, que incluye los movimientos de salida y entrada de mercancia/productos. Tambien incluye generacion de reportes en PDF del stock actual de mercancia.
+Esta plataforma te permite llevar el control del Inventario de tu Negocio indicando la cantidad de mercancia actual, precios, dinero en Inventario etc... Incluye un apartado de Historial de movimientos con reportes en PDFs, que incluye los movimientos de salida y entrada de mercancia/productos. Tambien incluye generacion de reportes en PDF del stock actual de mercancia.
 
-La web de la plataforma esta disponible en la siguiente url: https://inventario01.vercel.app/
+La web de la plataforma esta disponible en la siguiente url: https://tuinventario.vercel.app/
 
 La aplicacion movil esta disponible en la siguiente url: https://drive.google.com/file/d/1bOU2TJ84dJc-XHuupTRq-Z9qMB9x7M5B/view?usp=drive_link
 

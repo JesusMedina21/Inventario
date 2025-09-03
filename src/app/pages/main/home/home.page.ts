@@ -42,13 +42,13 @@ export class HomePage implements OnInit {
 
     // Add event listeners for online and offline events
     window.addEventListener('online', () => {
-      console.log('Conectado a Internet');
+      //console.log('Conectado a Internet');
       this.isConnected = true;
       this.changeDetector.detectChanges(); // Notify Angular of the change
     });
 
     window.addEventListener('offline', () => {
-      console.log('Conexión a Internet perdida');
+      //console.log('Conexión a Internet perdida');
       this.isConnected = false;
       this.changeDetector.detectChanges(); // Notify Angular of the change
     });
@@ -57,15 +57,25 @@ export class HomePage implements OnInit {
 
 
   async pdf() {
-    let docDefinition = {
-      content: [],
-      header: {
-        margin: [0, 10, 0, 0],
-        text: [
-          { text: 'INVENTARIO DEL ABASTO LA PERLA DE ORIENTE', alignment: 'center' },
-        ]
-      },
-      footer: function (currentPage, pageCount) {
+    const userName = this.user()?.name || 'Usuario';
+    const fechaGeneracion = new Date().toLocaleDateString('es-CO', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    let docDefinition: any = {
+      content: [
+        {
+          stack: [
+            { text: `INVENTARIO DE ${userName.toUpperCase()}`, alignment: 'center', bold: true, fontSize: 16, margin: [0, 0, 0, 5] },
+            { text: `Generado el: ${fechaGeneracion}`, alignment: 'center', fontSize: 10, margin: [0, 0, 0, 10] }
+          ]
+        }
+      ],
+      footer: function (currentPage: number, pageCount: number) {
         return [
           {
             text: 'Copyright © jesusmedina0921@gmail.com. Todos los derechos reservados.\n',
@@ -78,45 +88,38 @@ export class HomePage implements OnInit {
         ];
       },
       styles: {
-        header: {
-          fontSize: 14,
-          bold: true,
-          margin: [0, 10, 0, 10],
-          color: 'white',
-          alignment: 'center'
-        },
         tableHeader: {
           bold: true,
           fontSize: 12,
           color: 'white',
           fillColor: '#217283',
           alignment: 'center'
-        },
-        tableExample: {
-          margin: [0, 5, 0, 15]
         }
-      },
+      }
     };
 
     const maxProductsPerPage = 17;
     for (let i = 0; i < this.products.length; i += maxProductsPerPage) {
       const chunk = this.products.slice(i, i + maxProductsPerPage);
-      const rows = [];
+      const rows: any[] = [];
+
+      // encabezado de tabla
       rows.push([
         { text: 'Producto', style: 'tableHeader' },
         { text: 'Precio', style: 'tableHeader' },
         { text: 'Inventario Actual', style: 'tableHeader' }
       ]);
 
+      // filas dinámicas
       chunk.forEach((product, index) => {
         let displayText = '';
 
         if (product.Peso) {
-          displayText = `${product.Peso} gramos`; // Mostrar peso si existe
+          displayText = `${product.Peso} gramos`;
         } else if (product.Cantidad) {
-          displayText = `${product.Cantidad} Unidades`; // Mostrar cantidad si no existe peso
+          displayText = `${product.Cantidad} Unidades`;
         } else {
-          displayText = 'Sin existencia'; // Mensaje si no existe ninguno
+          displayText = 'Sin existencia';
         }
 
         rows.push([
@@ -132,7 +135,7 @@ export class HomePage implements OnInit {
           body: rows
         },
         layout: {
-          fillColor: function (rowIndex) {
+          fillColor: function (rowIndex: number) {
             return rowIndex === 0 ? '#0054e9' : null;
           }
         }
@@ -147,44 +150,38 @@ export class HomePage implements OnInit {
     const pdfDoc = pdfMake.createPdf(docDefinition);
 
     if (Capacitor.isNativePlatform()) {
-      // Para dispositivos móviles - generar y abrir automáticamente
       pdfDoc.getBlob(async (blob) => {
         try {
           const base64 = await this.blobToBase64(blob);
           const fileName = `inventario_${new Date().getTime()}.pdf`;
 
-          // Guardar el archivo temporalmente en cache
           const result = await Filesystem.writeFile({
             path: fileName,
             data: base64,
-            directory: Directory.Cache, // Usar cache para archivos temporales
+            directory: Directory.Cache,
             recursive: true
           });
 
-          // Obtener la URI del archivo
           const fileUri = await Filesystem.getUri({
             directory: Directory.Cache,
             path: fileName
           });
 
-          // Abrir el PDF automáticamente con aplicaciones disponibles
           await Share.share({
             title: 'Inventario',
-            text: 'Inventario del Abasto La Perla de Oriente',
+            text: 'Inventario',
             url: fileUri.uri,
             dialogTitle: 'Abrir PDF con'
           });
-
-        } catch (error) {
-          console.error('Error al generar/compartir PDF:', error);
+        } catch (error: any) {
           alert('Error al abrir el PDF: ' + error.message);
         }
       });
     } else {
-      // Para navegador web - descarga normal
       pdfDoc.download('inventario.pdf');
     }
   }
+
 
   // Función auxiliar para convertir blob a base64
   private blobToBase64(blob: Blob): Promise<string> {
@@ -205,8 +202,22 @@ export class HomePage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.getProducts();
+    this.verifyUserAndLoadProducts();
   }
+
+  // Añade este método
+  verifyUserAndLoadProducts() {
+    const user = this.user();
+    if (user && user.uid) {
+      this.getProducts();
+    } else {
+      // Si no hay usuario, esperar y reintentar
+      setTimeout(() => {
+        this.verifyUserAndLoadProducts();
+      }, 500);
+    }
+  }
+
 
   //Reiniciar pagina
 
@@ -274,9 +285,11 @@ export class HomePage implements OnInit {
 
 
   //Orden de productos
-  //Orden de productos
   getProducts() {
-    let path = `productos`;
+
+    let path = `usuarios/${this.user().uid}/productos`;
+
+    //let path = `productos`;
     this.loading = true;
     let query = [
       orderBy('precio', 'desc'),
@@ -298,7 +311,7 @@ export class HomePage implements OnInit {
           this.loading = false;
         },
         error: (error) => {
-          console.error('Error al obtener los productos:', error);
+          //console.error('Error al obtener los productos:', error);
         },
       });
   }
@@ -393,9 +406,9 @@ export class HomePage implements OnInit {
 
       if (precioDigits > 3) {
         const formattedprecio = precioString.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Inserta un punto cada tres dígitos
-        return `${formattedprecio} Pesos Colombianos`;
+        return `${formattedprecio} $`;
       } else {
-        return `${product.precio} Pesos Colombianos`;
+        return `${product.precio} $`;
       }
     } else {
       return `Cantidad: ${product.Cantidad}`;
@@ -478,7 +491,7 @@ export class HomePage implements OnInit {
                 icon: 'checkmark-circle-outline'
               });
             } catch (error) {
-              console.error(error);
+              //console.error(error);
               this.utilsSvc.presentToast({
                 message: error.message,
                 duration: 1500,
@@ -595,7 +608,7 @@ export class HomePage implements OnInit {
                 icon: 'checkmark-circle-outline'
               });
             } catch (error) {
-              console.error(error);
+              //console.error(error);
               this.utilsSvc.presentToast({
                 message: error.message,
                 duration: 1500,
@@ -612,14 +625,14 @@ export class HomePage implements OnInit {
     });
   }
   async actualizar_documento(product: Product) {
-    //   const path = `usuarios/${this.user().uid}/productos/${product.id}`;
-    const path = `productos/${product.id}`;
+    const path = `usuarios/${this.user().uid}/productos/${product.id}`;
+    //const path = `productos/${product.id}`;
 
     try {
       await this.firebaseSvc.updateDocument(path, product);
-      console.log('Producto actualizado en la colección de productos');
+      //console.log('Producto actualizado en la colección de productos');
     } catch (error) {
-      console.error('Error al actualizar el producto en la colección de productos:', error);
+      //console.error('Error al actualizar el producto en la colección de productos:', error);
       // Manejar el error según sea necesario
     }
   }
@@ -657,8 +670,8 @@ export class HomePage implements OnInit {
   async deleteProduct(product: Product) {
 
 
-    //   let path = `usuarios/${this.user().uid}/productos/${product.id}`;
-    let path = `productos/${product.id}`
+    let path = `usuarios/${this.user().uid}/productos/${product.id}`;
+    //let path = `productos/${product.id}`
 
     const loading = await this.utilsSvc.loading();
     await loading.present();
@@ -683,7 +696,7 @@ export class HomePage implements OnInit {
 
 
     }).catch(error => {
-      console.log(error);
+      //console.log(error);
 
 
       this.utilsSvc.presentToast({

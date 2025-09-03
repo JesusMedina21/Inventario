@@ -1,31 +1,26 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';  // <-- usar compat
+
 @Injectable({
   providedIn: 'root'
 })
 export class HistorialService {
-  historial: any[] = [];
   historialCollection: any;
 
-
-  constructor(private firestore: AngularFirestore) {
-    this.historialCollection = this.firestore.collection('historial');
-    this.ordenarHistorial(); // Llama a la función para ordenar el historial al inicializar el servicio
-  }
-
-  agregarRegistro(registro: any) {
-    this.historialCollection.add(registro);
-    this.ordenarHistorial();
-  }
-
-  obtenerHistorial() {
-    return this.historial;
-  }
-
-  private ordenarHistorial() {
-    this.historial.sort((a, b) => {
-      return new Date(b.fecha).getTime() - new Date(a.fecha).getTime();
+  constructor(private firestore: AngularFirestore, private afAuth: AngularFireAuth) {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.historialCollection = this.firestore.collection(`usuarios/${user.uid}/historial`);
+      }
     });
   }
 
+  agregarRegistro(registro: any) {
+    return this.historialCollection.add(registro);
+  }
+
+  obtenerHistorial() {
+    return this.historialCollection.valueChanges({ idField: 'id' });
+  }
 }

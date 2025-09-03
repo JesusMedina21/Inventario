@@ -8,8 +8,12 @@ export class CategoriaService {
 
   constructor(private db: AngularFirestore) { }
 
-  async nombreExiste(nombre: string): Promise<boolean> {
-    const snapshot = await this.db.collection('categorias', ref => ref.where('nombre', '==', nombre)).get().toPromise();
+  async nombreExiste(uid: string, nombre: string): Promise<boolean> {
+    const snapshot = await this.db
+      .collection(`usuarios/${uid}/categorias`, ref => ref.where('nombre', '==', nombre))
+      .get()
+      .toPromise();
     return !snapshot.empty;
   }
+
 }

@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.inventariocarlos.app',
-  appName: 'Inventario',
+  appId: 'com.tuinventario.app',
+  appName: 'Tu Inventario',
   webDir: 'www',
   //plugins: {
   //  SplashScreen: {

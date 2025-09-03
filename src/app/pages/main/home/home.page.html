@@ -13,7 +13,7 @@
       <h5>Productos Existentes</h5>
     </div>
     <div *ngIf="!loading && products.length">
-      <h5>{{ getProfits() === '0' ? '0 COP' : getProfits() + ' COP' }}</h5>
+      <h5>{{ getProfits() === '0' ? '0 $' : getProfits() + ' $' }}</h5>
       <h5>Dinero en inventario</h5>
     </div>
   </ion-card>  
@@ -72,8 +72,8 @@
             <ion-label>
               {{
                 p.Peso
-                  ? (p.Peso / 1000 * p.precio === 0 ? '' : 'Inversión Total: ' + InversionConPuntos(p.Peso / 1000 * p.precio) + ' COP')
-                  : (p.precio * p.Cantidad === 0 ? 'Inversion Total: 0 COP' : 'Inversión Total: ' + InversionConPuntos(p.precio * p.Cantidad) + ' COP')
+                  ? (p.Peso / 1000 * p.precio === 0 ? '' : 'Inversión Total: ' + InversionConPuntos(p.Peso / 1000 * p.precio) + '$')
+                  : (p.precio * p.Cantidad === 0 ? 'Inversion Total: 0 $' : 'Inversión Total: ' + InversionConPuntos(p.precio * p.Cantidad) + ' $')
               }}
             </ion-label>
           </ion-chip>

@@ -35,11 +35,11 @@ export class CategoriaComponent implements OnInit {
     this.isConnected = navigator.onLine;
     // Agregar oyentes de eventos para eventos en línea y fuera de línea
     window.addEventListener('online', () => {
-      console.log('Conectado a Internet');
+      //console.log('Conectado a Internet');
       this.isConnected = true;
     });
     window.addEventListener('offline', () => {
-      console.log('Conexión a Internet perdida');
+      //console.log('Conexión a Internet perdida');
       this.isConnected = false;
     });
   }
@@ -79,7 +79,8 @@ export class CategoriaComponent implements OnInit {
 
   // Crear categoría
   async createCategoria() {
-    let path = `categorias`;
+    let path = `usuarios/${this.user.uid}/categorias`;
+    //let path = `categorias`;
     const nombreCategoria = this.form.get('nombre').value;
     const categoriaExistente = await this.firebaseSvc.getDocumentByField(path, 'nombre', nombreCategoria);
     if (categoriaExistente) {
@@ -105,7 +106,7 @@ export class CategoriaComponent implements OnInit {
       });
       this.utilsSvc.dismissModal({ success: true });
     }).catch(error => {
-      console.log(error);
+      //console.log(error);
       this.utilsSvc.presentToast({
         message: error.message,
         duration: 1500,
@@ -121,7 +122,8 @@ export class CategoriaComponent implements OnInit {
 
   // Actualizar categoría
   async updateCategoria() {
-    let path = `categorias/${this.categoria.id}`;
+    let path = `usuarios/${this.user.uid}/categorias/${this.categoria.id}`;
+    //let path = `categorias/${this.categoria.id}`;
     const loading = await this.utilsSvc.loading();
     await loading.present();
     const nombreCategoria = this.form.get('nombre').value;
@@ -148,7 +150,7 @@ export class CategoriaComponent implements OnInit {
       });
       this.utilsSvc.dismissModal({ success: true });
     }).catch(error => {
-      console.log(error);
+      //console.log(error);
       this.utilsSvc.presentToast({
         message: error.message,
         duration: 1500,

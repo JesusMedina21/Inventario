@@ -88,7 +88,7 @@ getCategorias() {
     }
   }
   const user = this.user;
-  const path = `usuarios_global/${user.uid}`;
+  const path = `usuarios/${user.uid}`;
   const updatedUser: User = {
     ...user,
     password: this.form.value.password,
@@ -118,7 +118,7 @@ getCategorias() {
     this.utilsSvc.routerLink('/auth');
 
   } catch (error) {
-    console.error('Error updating user:', error);
+    //console.error('Error updating user:', error);
     this.utilsSvc.presentToast({
       message: 'Ocurrió un error al actualizar el usuario',
       duration: 1500,
@@ -133,7 +133,7 @@ getCategorias() {
 
  //Eliminar Usuario
  async deleteUsuario(user: User){
-  let path = `usuarios_global/${user.uid}`;
+  let path = `usuarios/${user.uid}`;
   const loading = await this.utilsSvc.loading();
   await loading.present();
 
@@ -151,7 +151,7 @@ getCategorias() {
       });
       this.router.navigate(['/auth']);
     }).catch(error => {
-      console.log(error);
+      //console.log(error);
       this.utilsSvc.presentToast({ 
         message: error.message,
         duration: 1500,
@@ -161,7 +161,7 @@ getCategorias() {
       });
     });
   }).catch(error => {
-    console.log(error);
+    //console.log(error);
     this.utilsSvc.presentToast({ 
       message: error.message,
       duration: 1500,
@@ -195,7 +195,7 @@ getCategorias() {
 
    // let path = `usuarios/${user.uid}`; //Esta es la coleccion
     
-    let path = `usuarios_global/${user.uid}`;
+    let path = `usuarios/${user.uid}`;
     
     const dataUrl = (await this.utilsSvc.takePicture('Seleccionar una opcion')).dataUrl;
 
@@ -221,7 +221,7 @@ getCategorias() {
   
        
       }).catch(error => {
-        console.log(error);
+        //console.log(error);
   
   
       this.utilsSvc.presentToast({ 

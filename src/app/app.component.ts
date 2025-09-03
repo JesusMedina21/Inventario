@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { environment } from 'src/environments/environment';
+import { UtilsService } from './services/utils.service';
 // import { SplashScreen } from '@capacitor/splash-screen';
 @Component({
   selector: 'app-root',
@@ -11,8 +12,26 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+  utilsSvc = inject(UtilsService);
+
   constructor() {
-   // this.showSplash()
+    // Escuchar cambios en la autenticación
+    window.addEventListener('userAuthStateChanged', () => {
+      this.handleAuthStateChange();
+    });
+
+    // Verificar estado inicial
+    this.handleAuthStateChange();
+  }
+  handleAuthStateChange() {
+    const user = this.utilsSvc.getFromLocalStorage('user');
+    if (user) {
+      this.utilsSvc.updateTitleForUser(user);
+      this.utilsSvc.setIsAuthPage(false);
+    } else {
+      this.utilsSvc.changeTitle('TU INVENTARIO');
+      this.utilsSvc.setIsAuthPage(true);
+    }
   }
 
   //async showSplash() {
