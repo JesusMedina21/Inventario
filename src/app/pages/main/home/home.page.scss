@@ -1,0 +1,62 @@
+ion-card {
+  gap: 100px;
+  padding: 5px 0;
+  border-radius: 5px;
+}
+
+ion-content {
+  --padding-bottom: 70px;
+}
+
+ion-fab {
+  bottom: 70px; /* 70 SI ES ONLINE, 0 si es local Ajusta el valor según la cantidad de píxeles que deseas subir el footer */
+}
+
+.buscador {
+  height: 40px;
+  width: 500px; /* Asegura que el buscador ocupe todo el ancho disponible */
+}
+
+.pdf {
+  height: 40px;
+  margin-right: 5px; /* Espacio entre el botón PDF y el botón de categorías */
+}
+
+.categoria {
+  height: 40px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column; /* Coloca los elementos en columna por defecto */
+}
+
+.pdf-categoria-buttons {
+  display: flex; /* Alinea los botones horizontalmente */
+  justify-content: flex-start; /* Alinea los botones al inicio */
+  margin-top: 10px; /* Espacio entre el buscador y los botones */
+}
+
+@media (min-width: 600px) {
+  .button-container {
+      flex-direction: row; /* Cambia a fila en pantallas grandes */
+      justify-content: space-between; /* Alinea los elementos en una fila */
+  }
+
+  .pdf-categoria-buttons {
+      margin-top: 0; /* Elimina el margen superior en pantallas grandes */
+  }
+}
+
+@media (max-width: 400px) {
+  .pdf-categoria-buttons {
+    display: flex; /* Alinea los botones horizontalmente */
+    justify-content: center; /* Centra los botones dentro del contenedor */
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+    margin-top: 10px; /* Espacio entre el buscador y los botones */
+  }
+
+  .pdf {
+    margin-right: 5px; /* Espacio entre los botones */
+  }
+}

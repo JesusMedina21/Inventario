@@ -1,0 +1,32 @@
+.image-icon{
+    font-size: 100px;
+    opacity: 30%;
+}
+
+ion-avatar{
+    width: 200px;
+    height: 160px;
+    --border-radius: 15px;
+    margin: 0 auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  ion-grid {
+    padding: 20px; /* Ajuste el espacio alrededor de los botones */
+    display: flex;
+    justify-content: center;
+  }
+  
+  ion-button {
+    margin: 10px; /* Ajuste el espacio entre los botones */
+    text-align: center; /* Centra el texto dentro de los botones */
+  }
+
+  .center-text {
+    text-align: center;
+  }
+  

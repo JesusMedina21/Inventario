@@ -1,0 +1,17 @@
+
+.background-style {
+  background-color: lightblue; /* Color de fondo */
+  padding: 10px; /* Espacio interno alrededor del texto */
+  border-radius: 5px; /* Bordes redondeados */
+  width: 75%; /* Ancho del fondo */
+  text-align: center; /* Alinear el texto a la izquierda */
+  margin-left: auto;
+  cursor: pointer;
+  
+}
+
+.login-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;  /* Adjust margin as needed */
+}

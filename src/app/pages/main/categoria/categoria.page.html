@@ -1,0 +1,68 @@
+<app-header backButton="/main/home" title="Categoria"></app-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card mode="ios" *ngIf="!loading && filteredCategorias.length" color="secondary" class="d-flex-center ion-text-center" >
+    <div>
+      <h5>{{ filteredCategorias.length }}</h5>
+      <h5>Categorías Existentes</h5>
+    </div>
+  </ion-card>
+
+  <div *ngIf="!loading && filteredCategorias.length" class="search-container">
+    <ion-searchbar 
+      placeholder="Buscar Categorías" 
+      [(ngModel)]="searchTerm" 
+      (ionChange)="filterCategorias()" 
+      (ionClear)="clearSearch()"></ion-searchbar>
+  </div>
+
+  <ion-list *ngIf="!loading && filteredCategorias.length">
+    <ion-item-sliding class="categoria-item" *ngFor="let p of filteredCategorias">
+      <ion-item>
+        <ion-label>
+          <div class="name">Categoría: {{ p.nombre }}</div>
+        </ion-label>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option (click)="addUpdateCategoria(p)">
+          <ion-icon class="option-btn" name="create-outline"></ion-icon>
+        </ion-item-option>
+        <ion-item-option (click)="confirmDeleteCategoria(p)" color="danger">
+          <ion-icon class="option-btn" name="trash-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-list *ngIf="loading">
+    <ion-item class="product-item" *ngFor="let p of [1,1,1,1,1,1,1,1]">
+      <ion-avatar slot="start">
+        <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
+      </ion-avatar>
+      <ion-label>
+        <div><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></div>
+        <div><ion-skeleton-text animated style="width: 30%"></ion-skeleton-text></div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="!loading && !filteredCategorias.length && !searchTerm" class="empty">
+    <app-logo></app-logo>
+    <h3>No existen categorías hasta el momento</h3>
+  </div>
+
+  <div *ngIf="!loading && !filteredCategorias.length && searchTerm" class="empty">
+    <app-logo></app-logo>
+    <h3>No existen categorías que coincidan con su búsqueda</h3>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addUpdateCategoria()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <br><br><br><br><br><br>
+</ion-content>

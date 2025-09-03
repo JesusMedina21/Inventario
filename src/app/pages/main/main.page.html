@@ -1,0 +1,38 @@
+<ion-menu contentId="menu-content" menuId="menu-content" side="start">
+  
+
+  <ion-content color="primary"  class="ion-text-center">
+    <h2>Menu</h2>
+    <ion-avatar>
+      <img *ngIf="user()?.image" [src]="user()?.image"/>
+      <ion-icon *ngIf="!user()?.image" class="empty-icon" name="person-circle-outline"></ion-icon>
+    </ion-avatar>
+    <h4>{{user()?.name}}</h4>
+
+  
+    <ion-menu-toggle auto-hide="false" *ngFor="let page of pages">
+      <ion-item 
+        color="primary" 
+        [ngClass]="{'active': currentPath === page.url}" 
+        routerDirection="root" 
+        detail 
+        (click)="page.url.includes('http') ? redirectTo(page.url) : router.navigate([page.url])">
+        <ion-icon slot="start" [name]="page.icon"></ion-icon>
+        <ion-label>{{ page.title }}</ion-label>
+      </ion-item>
+    </ion-menu-toggle>
+  </ion-content>
+
+  
+  <ion-footer class="ion-no-border safe-p-bottom">
+    <ion-menu-toggle auto-hide="false">
+      <ion-item  color="primary" (click)="signOut()" detail>
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        <ion-label>Cerrar sesion</ion-label>
+      </ion-item>
+    </ion-menu-toggle>
+  </ion-footer>
+
+</ion-menu>
+
+<ion-router-outlet id="menu-content" main></ion-router-outlet>

@@ -1,0 +1,98 @@
+<app-header [showMenu]="true" title="Historial"></app-header>
+
+<ion-content>
+
+  <br>
+  
+  <!------------------------------------------------------Botones para Filtrar----------------------------------------------------------->
+ 
+
+  <ion-grid columns="3">
+    <ion-button [color]="selectedButton === 'Total' ? 'success' : 'primary'" (click)="filtrarHistorialTotal()">Historial Total</ion-button>
+    <ion-button [color]="selectedButton === 'Entrada' ? 'success' : 'primary'" (click)="filtrarHistorial('Entrada')">Historial Entrada</ion-button>
+    <ion-button [color]="selectedButton === 'Salida' ? 'success' : 'primary'" (click)="filtrarHistorial('Salida')">Historial Salida</ion-button>
+  </ion-grid>
+
+  <ion-grid columns="3">
+    <ion-button color="primary"   *ngIf="filtroTipo === 'Total'" (click)="generarPdf('Total')" id="pdf-total">PDF Total</ion-button>
+    <ion-button color="primary"   *ngIf="filtroTipo === 'Entrada'" (click)="generarPdf('Entrada')" id="pdf-entrada">PDF Entrada</ion-button>
+    <ion-button color="primary"   *ngIf="filtroTipo === 'Salida'" (click)="generarPdf('Salida')" id="pdf-salida">PDF Salida</ion-button>
+    <ion-button color="primary"   (click)="generarPdfPorFechas()" id="pdf-fechas">PDF Calendario</ion-button>
+  </ion-grid>
+
+  
+
+
+  <p class="background-style2">El boton verde es el boton seleccionado</p>
+  
+  <br>
+
+  
+  <div style="display: flex;">
+    <!---------------------------------------Buscador por nombre----------------------------------------------------------->
+    <div style="flex: 1;">
+      <ion-searchbar class="buscador" placeholder="Buscar" [(ngModel)]="searchTerm" (ionInput)="filtrarPorNombre()"></ion-searchbar>
+     </div>
+    
+    <!---------------------------------------Buscador por fecha----------------------------------------------------------->
+    <div >
+      <ion-button color="primary" class="buscador-calendario"  (click)="toggleCalendar()">{{ visible ? 'Cerrar calendario' : 'Abrir calendario' }}</ion-button>
+    </div>
+  </div>
+
+
+
+  <!---------------------------------------Calendario----------------------------------------------------------->
+
+  <div style="display: flex; justify-content: center;">
+    <table>
+      <br>
+      <div [hidden]="!visible">
+        <ion-item *ngIf="visible">
+          <ion-datetime class="calendario" displayFormat="DD/MMMM/YYYY" min="2020-01-01" max="2030-12-31" presentation="date" (ionChange)="onStartDateChange($event)"></ion-datetime>
+          <ion-datetime class="calendario" displayFormat="DD/MMMM/YYYY" min="2020-01-01" max="2030-12-31" presentation="date" (ionChange)="onEndDateChange($event)"></ion-datetime>
+        </ion-item>
+      </div>
+    </table>
+  </div>
+
+        <!------------------------------------------------------Historial----------------------------------------------------------->
+  <div *ngIf="historiales" class="centrar-texto">
+    <ion-list *ngIf="historiales">
+      <ion-item *ngIf="(historiales | async) && (historiales | async).length > 0">  
+        <ion-label>
+          <strong>Producto</strong>
+        </ion-label>
+        <ion-label>
+          <strong>Accion</strong>
+        </ion-label>
+        <ion-label>
+          <strong>Cantidad</strong>
+        </ion-label>
+        <ion-label>
+          <strong>Fecha</strong>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngFor="let historial of historiales | async">
+        <ion-label *ngIf="!noResultados">{{ historial.producto.name }}</ion-label>
+        <ion-label *ngIf="!noResultados" [ngStyle]="{ 'color': historial.tipo === 'Entrada' ? 'green' : 'red' }">{{ historial.tipo }}</ion-label>
+        <ion-label *ngIf="!noResultados">
+          {{ historial.tipo === 'Entrada' ? '+ ' : '- ' }}
+          {{ historial.cantidadAgregada ? historial.cantidadAgregada : historial.cantidadSaliente }}
+          {{ historial.producto.Peso ? 'Gramos' : 'Unidades' }}
+        </ion-label>
+        <ion-label *ngIf="!noResultados">{{ formatDate(historial.fecha) }}</ion-label>
+      </ion-item>
+    </ion-list>
+    
+    <div *ngIf="noResultados" class="center-text">
+      <p>No se encontraron resultados.</p>
+      <app-logo></app-logo>
+    </div>
+    
+  </div>
+
+  <br><br><br><br><br>
+</ion-content>     
+  
+

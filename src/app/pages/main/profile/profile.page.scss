@@ -1,0 +1,23 @@
+ion-avatar{
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
+}
+
+.photo-btn{
+    position: relative;
+    bottom:  25px;
+}
+
+h2{
+    margin-bottom: 0;
+}
+
+ion-item{
+    --padding-top: 15px;
+}
+
+.empty-icon{
+    font-size: 140px;
+    opacity: 30%;
+}

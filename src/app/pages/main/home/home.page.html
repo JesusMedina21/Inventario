@@ -1,0 +1,157 @@
+<app-header [showMenu]="true"  title="Inicio"></app-header>
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+
+
+  <ion-card mode="ios" color="secondary" class="d-flex-center ion-text-center" >
+    <div>
+      <h5>{{products.length}}</h5>
+      <h5>Productos Existentes</h5>
+    </div>
+    <div *ngIf="!loading && products.length">
+      <h5>{{ getProfits() === '0' ? '0 COP' : getProfits() + ' COP' }}</h5>
+      <h5>Dinero en inventario</h5>
+    </div>
+  </ion-card>  
+
+
+<!--  <ion-grid>
+    <ion-row class="ion-justify-content-center ion-align-items-center" style="height: 100%;">
+      <ion-col size="auto" class="ion-text-center">
+        <ion-button id="view-categories-button" fill="outline" routerLink="/main/categoria">Ver categorías</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  -->
+
+<br>
+
+<div>
+  <div class="button-container">
+    <!---------------------------------------Buscador----------------------------------------------------------->
+    <div class="search-container">
+      <ion-searchbar class="buscador" placeholder="Buscar Producto" [(ngModel)]="searchTerm" (ionChange)="filterProducts()"></ion-searchbar>
+    </div>
+
+    <!---------------------------------------Botones PDF y Categorías----------------------------------------------------------->
+    <div class="pdf-categoria-buttons">
+      <ion-button  *ngIf="!loading && products.length" class="pdf" id="pdf-button" (click)="pdf()" color="primary">PDF</ion-button>
+      <ion-button class="categoria" id="view-categories-button" fill="outline" routerLink="/main/categoria">Ver categorías</ion-button>
+    </div>
+  </div>
+</div>
+    <br>
+<div style="clear: both;">
+    <!-------------------------------------------------------Productos----------------------------------------------------->
+  <ion-list *ngIf="!loading">
+    <ion-item-sliding class="product-item" *ngFor="let p of products">
+      <ion-item>
+        <ion-avatar slot="start"> <!--Este start hace que el texto se vea un poquito mas separado de la imagen-->
+          <img [src]="p.image"/>
+        </ion-avatar>
+        <ion-label>
+          <div class="name">{{p.name}}</div>
+          <div class="data">
+            <strong>Precio: </strong> {{MostrarPrecioConPuntos(p) }}
+            <br>
+            <strong>{{ MostrarStockActualConPuntos(p) }}</strong>
+            <br>
+            <strong>Categoria:</strong> {{p.categoriaProducto}}
+            <br>
+            <strong></strong>{{ MostrarStockMinConPuntos(p) }}
+            <br>
+            <strong></strong>{{ MostrarStockMaxConPuntos(p) }}
+            <br>
+          </div>
+
+          <ion-chip color="primary" mode="ios" outline="true">
+            <ion-label>
+              {{
+                p.Peso
+                  ? (p.Peso / 1000 * p.precio === 0 ? '' : 'Inversión Total: ' + InversionConPuntos(p.Peso / 1000 * p.precio) + ' COP')
+                  : (p.precio * p.Cantidad === 0 ? 'Inversion Total: 0 COP' : 'Inversión Total: ' + InversionConPuntos(p.precio * p.Cantidad) + ' COP')
+              }}
+            </ion-label>
+          </ion-chip>
+          
+        </ion-label>
+        <div>
+          <ion-button color="medium" expand="block" mode="md" class="submit" type="submit" (click)="EntradaProducto(p)" [disabled]="!isConnected">
+            Entrada del 
+            <br> 
+            Producto
+        </ion-button>
+        <ion-button expand="primary" mode="md" class="submit" type="submit" (click)="SalidaProducto(p)" [disabled]="!isConnected">
+            Salida del 
+            <br>
+            Producto
+        </ion-button>
+        </div>
+        
+      </ion-item>
+      
+
+      <!----------------------Opciones----------------------->
+      <ion-item-options>
+        <!----------------------Editar----------------------->
+
+        <ion-item-option (click)="addUpdateProduct(p)">
+          <ion-icon class="option-btn" name="create-outline"></ion-icon>
+        </ion-item-option>
+         <!----------------------Eliminar----------------------->
+
+        <ion-item-option (click)="confirmDeleteProduct(p)" color="danger">
+          <ion-icon class="option-btn" name="trash-outline"></ion-icon>
+        </ion-item-option> 
+
+      </ion-item-options>
+
+      
+
+    </ion-item-sliding>
+  </ion-list> 
+</div>  
+<div *ngIf="!loading && !products.length" class="empty">
+    
+  <app-logo></app-logo>
+
+  <h3>No hay productos disponibles</h3>
+  
+</div>
+
+  <br><br><br>
+
+  <!-------------------------------------------------CARGANDO---------------------------------------------------------------->
+
+  <ion-list *ngIf="loading">
+    <ion-item class="product-item" *ngFor="let p of [1,1,1,1,1,1,1,1]">
+      <ion-avatar slot="start"> <!--Este start hace que el texto se vea un poquito mas separado de la imagen-->
+       <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
+      </ion-avatar>
+      <ion-label>
+        <div> <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></div>
+        <div> <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text></div>
+      </ion-label>
+    </ion-item> 
+  </ion-list> 
+
+  <!----------------------------------------------Sin productos disponibles---------------------------------------------------------------->
+
+
+
+
+  <!---------------------Agregar producto--------->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addUpdateProduct()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+ 
+  
+
+</ion-content>

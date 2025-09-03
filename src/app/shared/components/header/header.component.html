@@ -1,0 +1,41 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" class="custom-header">
+
+    <!--Boton de regreso-->
+    <ion-buttons slot="start">
+      <ion-back-button *ngIf="backButton" [defaultHref]="backButton"  ></ion-back-button>
+   
+
+      <ion-button (click)="dismissModal()" *ngIf="isModal">
+        <ion-icon name="close-circle-outline"></ion-icon>
+      </ion-button>
+
+  
+        <ion-menu-button *ngIf="showMenu" menu="menu-content"></ion-menu-button>
+
+    </ion-buttons>
+
+    
+    <ion-title>
+      <br>
+      <strong>{{title}}</strong>
+      <div class="admin">Perla del Oriente</div>
+      <br>
+      <div class="admin2">
+        
+      </div>
+    </ion-title> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-footer>
+  <ion-toolbar color="primary">
+    <!-- Contenido del footer -->
+    <p class="ion-text-center">Copyright &copy;<!-- Este es el simbolo del Copyright -->
+      
+      jesusmedina0921&#64;gmail.com
+      <br>Todos los derechos reservados.
+      <br>
+    </p>
+  </ion-toolbar>
+</ion-footer>

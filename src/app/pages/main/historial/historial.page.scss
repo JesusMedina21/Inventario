@@ -1,0 +1,84 @@
+ion-grid {
+  padding: 20px; /* Ajuste el espacio alrededor de los botones */
+  display: flex;
+  justify-content: center;
+}
+
+ion-button {
+margin: 10px; /* Ajuste el espacio entre los botones */
+text-align: center; /* Centra el texto dentro de los botones */
+}
+
+.center-text {
+text-align: center;
+}
+
+.centrar-texto {
+text-align: center;
+}
+
+ion-label {
+text-align: center; /* Centra el texto dentro de los ion-label */
+width: 100%; /* Asegúrate de que el ancho sea el 100% para que el texto se centre correctamente */
+}
+
+.background-style2 {
+background-color :#2dd55b; /* Color de fondo */
+padding: 10px; /* Espacio interno alrededor del texto */
+border-radius: 5px; /* Bordes redondeados */
+width: 85%; /* Ancho del fondo */
+text-align: center; /* Centrar el texto */
+margin: 0 auto; /* Centrar horizontalmente */
+}
+
+.no-matches {
+text-align: center;
+}
+
+/* Add this to your global CSS file or a scoped style sheet */
+
+ion-content {
+overflow: hidden;
+}
+
+.hide-time {
+  .native-datetime-ctrl__time {
+    display: none; /* Hide the time selector element */
+  }
+}
+/* Ajustes para pantallas pequeñas */
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 400px) {
+  ion-label {
+    min-width: 30px; 
+  }
+  .small-text {
+    font-size: 0.8em; /* O cualquier tamaño que desees */
+  }
+  .calendario{
+    width: 150px; 
+    font-size: 14px;
+  }
+}
+.buscador {
+  width: 225px; /* Puedes ajustar esto en la media query */
+  height: 40px; /* Puedes ajustar esto en la media query */
+  margin-top: -10px;
+}
+.buscador-calendario {
+  width: 80px; 
+  height: 10px;
+  margin-top: -10px;
+}
+@media (min-width: 768px) {
+  .buscador {
+    width: 700px; /* Cambia el ancho para pantallas grandes */
+    height: 50px; /* Cambia la altura para pantallas grandes */
+    margin-top: -10px;
+  }
+  .buscador-calendario {
+    width: 120px; 
+    height: 20px;
+    margin-top: -10px;
+  }
+}

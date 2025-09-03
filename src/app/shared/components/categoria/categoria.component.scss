@@ -1,0 +1,14 @@
+.item-container {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid #bb2f2f;
+    border-radius: 5px;
+    cursor: pointer; /* Simulate button cursor on hover */
+    background-color: #0a7ddb; /* Button-like background color */
+  }
+  
+  .item-container .name {
+    font-weight: bold;
+  }
+  

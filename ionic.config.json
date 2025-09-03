@@ -1,0 +1,11 @@
+{
+  "name": "Proyecto",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "serve": {
+    "host": "localhost",
+    "port": 8100
+  }
+}

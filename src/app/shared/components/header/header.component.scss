@@ -1,0 +1,21 @@
+.admin{
+    font-size: 13px;
+}
+
+.admin2{
+    font-size: 14px;
+
+    text-align: center;
+}
+
+ion-footer {
+    position: fixed;
+    bottom: 0px; /* 0 SI ES ONLINE, 20 si es Local */
+    width: 100%;
+  }
+
+  .custom-header {
+    height: 80px; /* Ajusta la altura */
+    display: flex;
+    align-items: center; /* Centra verticalmente el contenido */
+}
