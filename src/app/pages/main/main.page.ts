@@ -15,8 +15,8 @@ export class MainPage implements OnInit {
     { title: 'Productos', url: '/main/home', icon: 'home-outline' },
     { title: 'Perfil', url: '/main/profile', icon: 'person-outline' },
     { title: 'Historial', url: '/main/historial', icon: 'grid-outline' },
-    { title: 'Web', url: 'https://tuinventario.vercel.app/', icon: 'globe-outline'},
-    //{ title: 'APK', url: 'https://drive.google.com/file/d/1OWO2uanzPtBOFOyPRgTt8M894aoLzh_S/view?usp=sharing', icon: 'logo-android' },
+    //{ title: 'Web', url: 'https://tuinventario.vercel.app/', icon: 'globe-outline'},
+    { title: 'APK', url: 'https://drive.google.com/file/d/1OWO2uanzPtBOFOyPRgTt8M894aoLzh_S/view?usp=sharing', icon: 'logo-android' },
 
   ]
 

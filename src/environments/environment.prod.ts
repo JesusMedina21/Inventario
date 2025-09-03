@@ -16,3 +16,15 @@ export const environment = {
     appId: FIREBASE_APP_ID,
   }
 };
+
+//export const environment = {
+//  production: true,
+//  firebaseConfig : {
+//    apiKey: "XXXXXXXXXXX-XXXXXXXXXXX-E",
+//    authDomain: "XXXXXXXXXXX",
+//    projectId: "XXXXXXXXXXX",
+//    storageBucket: "XXXXXXXXXXX.XXXXXXXXXXX.XXXXXXXXXXX",
+//    messagingSenderId: "XXXXXXXXXXX",
+//    appId: "XXXXXXXXXXX:XXXXXXXXXXX:XXXXXXXXXXX:XXXXXXXXXXX"
+//  }
+//};
