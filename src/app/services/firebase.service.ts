@@ -113,5 +113,17 @@ export class FirebaseService {
       return null;
     }
   }
+  async checkEmailExists(email: string): Promise<boolean> {
+    try {
+      const usersRef = collection(getFirestore(), 'usuarios');
+      const q = query(usersRef, where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+
+      return !querySnapshot.empty;
+    } catch (error) {
+      console.error('Error checking email:', error);
+      return false;
+    }
+  }
 
 }

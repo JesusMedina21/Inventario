@@ -26,41 +26,53 @@ export class ForgotPasswordPage implements OnInit {
 
   async submit() {
     if (this.form.valid) {
-
       const loading = await this.utilsSvc.loading();
       await loading.present();
 
-      this.firebaseSvc.sendRecoveryEmail(this.form.value.email).then(res => {
+      try {
+        const email = this.form.value.email;
+
+        // Primero verificamos si el email existe en la base de datos
+        const emailExists = await this.firebaseSvc.checkEmailExists(email);
+
+        if (!emailExists) {
+          // Si el email no existe, mostramos error
+          this.utilsSvc.presentToast({
+            message: 'Este correo no está registrado',
+            duration: 1500,
+            color: 'danger',
+            position: 'middle',
+            icon: 'alert-circle-outline'
+          });
+          return;
+        }
+
+        // Si el email existe, enviamos el correo de recuperación
+        await this.firebaseSvc.sendRecoveryEmail(email);
 
         this.utilsSvc.presentToast({
-          message: 'Mensaje enviado con exito',
+          message: 'Correo de recuperación enviado con éxito',
           duration: 1500,
           color: 'success',
           position: 'middle',
           icon: 'mail-outline'
         });
-        //Codigo de recuperacion
 
-        this.utilsSvc.routerLink('/auth');
+        this.utilsSvc.routerLink('/');
         this.form.reset();
 
-
-      }).catch(error => {
-        //console.log(error);
-
-
+      } catch (error) {
+        console.log(error);
         this.utilsSvc.presentToast({
-          message: 'Este correo no esta registrado',
+          message: 'Error al procesar la solicitud',
           duration: 1500,
           color: 'danger',
           position: 'middle',
           icon: 'alert-circle-outline'
         });
-        //Codigo de error 
-
-      }).finally(() => {
+      } finally {
         loading.dismiss();
-      })
+      }
     }
   }
 
