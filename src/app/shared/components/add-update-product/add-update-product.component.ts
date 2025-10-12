@@ -7,6 +7,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 
 import { orderBy, where } from 'firebase/firestore';
 import { Categoria } from 'src/app/models/categoria.model';
+import { CloudinaryService } from 'src/app/services/cloudinary.service';
 
 @Component({
   selector: 'app-add-update-product',
@@ -41,7 +42,7 @@ export class AddUpdateProductComponent implements OnInit {
   code: any;
   isSubmitting: boolean = false; // Step 1: Flag to track submission
   constructor(
-
+    private cloudinarySvc: CloudinaryService,
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
     private changeDetector: ChangeDetectorRef
@@ -197,6 +198,7 @@ export class AddUpdateProductComponent implements OnInit {
   }
 
   // Crear producto
+  // Crear producto
   async createProduct() {
     const connectionStatus = await this.checkConnection();
     if (!connectionStatus) {
@@ -204,7 +206,6 @@ export class AddUpdateProductComponent implements OnInit {
     }
 
     let path = `usuarios/${this.user.uid}/productos`;
-    //let path = `productos`;
     const nombreProducto = this.form.get('name').value;
     const NombreExistente = await this.firebaseSvc.getDocumentByField(path, 'name', nombreProducto);
 
@@ -216,107 +217,71 @@ export class AddUpdateProductComponent implements OnInit {
         position: 'middle',
         icon: 'alert-circle-outline'
       });
-    } else {
-      // Cargando
-      const loading = await this.utilsSvc.loading();
-      await loading.present();
+      return;
+    }
 
-      // Subir la imagen y obtener la URL
-      let dataUrl = this.form.value.image;
-      let imagePath = `${this.user.uid}/${Date.now()}`;
-      let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-      this.form.controls.image.setValue(imageUrl);
+    // Cargando
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
 
-      // Generar un ID único para el producto
-      const productId = this.form.get('name').value.replace(/\s+/g, '-').toLowerCase() + '-' + Date.now(); // Ejemplo de ID basado en el nombre y timestamp
+    let imageUrl = '';
+    let publicId = ''; // 👈 nuevo
 
-      // Limpiar campos según el tipo de producto seleccionado
-      if (this.selectedProductType === 'unidades') {
-        delete this.form.value.Peso;
-      } else {
-        delete this.form.value.Cantidad;
-      }
+    // Subir la imagen a Cloudinary
+    let dataUrl = this.form.value.image;
+    if (dataUrl) {
+      try {
+        const res: any = await this.cloudinarySvc.uploadImage(dataUrl).toPromise();
 
-      // Guardar el producto usando setDoc con el ID generado
-      this.firebaseSvc.setDocument(`${path}/${productId}`, { ...this.form.value, id: productId }).then(async res => {
+        imageUrl = res.secure_url;   // 👈 URL segura de Cloudinary
+        publicId = res.public_id;    // 👈 ID interno de Cloudinary
+
+        this.form.controls.image.setValue(imageUrl);
+
+      } catch (err) {
+        //console.error('Error subiendo a Cloudinary:', err);
         this.utilsSvc.presentToast({
-          message: 'Producto creado exitosamente',
-          duration: 1500,
-          color: 'success',
-          position: 'middle',
-          icon: 'checkmark-circle-outline'
-        });
-        // Cerrar el modal solo si el producto se registra con éxito
-        this.utilsSvc.dismissModal({ success: true });
-      }).catch(error => {
-        //console.log(error);
-        this.utilsSvc.presentToast({
-          message: error.message,
+          message: 'Error al subir la imagen',
           duration: 1500,
           color: 'danger',
           position: 'middle',
           icon: 'alert-circle-outline'
         });
-      }).finally(() => {
         loading.dismiss();
-      });
-    }
-  }
-  //Editar producto
-  async updateProduct() {
-    const connectionStatus = await this.checkConnection();
-    if (!connectionStatus) {
-      return; // Exit if there is no connection
+        return;
+      }
     }
 
-    let path = `usuarios/${this.user.uid}/productos/${this.product.id}`;
-    //let path = `productos/${this.product.id}`;
-    const selectedCategory = this.categorias.find(cat => cat.id === this.form.value.categoriaProducto);
-    if (selectedCategory) {
-      this.form.value.categoriaProducto = selectedCategory.nombre; // Almacenar el nombre de la categoría para referencia
+    // Generar un ID único para el producto
+    const productId = this.form.get('name').value.replace(/\s+/g, '-').toLowerCase() + '-' + Date.now();
+
+    // Limpiar campos según el tipo de producto seleccionado
+    if (this.selectedProductType === 'unidades') {
+      delete this.form.value.Peso;
     } else {
-      //console.error("Selected category not found"); // Manejar un posible error
+      delete this.form.value.Cantidad;
     }
-    const nombreProducto = this.form.get('name').value;
-    const ProductoExistente = await this.firebaseSvc.getDocumentByField('productos', 'name', nombreProducto);
 
-    if (ProductoExistente && ProductoExistente['id'] !== this.product.id) {
+    // Crear objeto final con publicId incluido
+    const productData = {
+      ...this.form.value,
+      id: productId,
+      image: imageUrl,
+      publicId: publicId,   // 👈 ahora lo guardamos
+      createdAt: new Date()
+    };
+
+    // Guardar en Firestore
+    this.firebaseSvc.setDocument(`${path}/${productId}`, productData).then(async res => {
       this.utilsSvc.presentToast({
-        message: 'Ya existe un producto con este nombre',
-        duration: 1500,
-        color: 'danger',
-        position: 'middle',
-        icon: 'alert-circle-outline'
-      });
-      return;
-    }
-
-    // Eliminar el campo "Cantidad" antes de asignar los valores al formulario
-    delete this.form.value.Cantidad;
-
-    const loading = await this.utilsSvc.loading();
-    await loading.present();
-
-    // Subir la imagen nueva y obtener la URL
-    if (this.form.value.image !== this.product.image) {
-      let dataUrl = this.form.value.image;
-      let imagePath = await this.firebaseSvc.getFilePath(this.product.image);
-      let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-      this.form.controls.image.setValue(imageUrl);
-    }
-
-    this.cleanFormValues();
-    delete this.form.value.id;
-
-    this.firebaseSvc.updateDocument(path, this.form.value).then(async res => {
-      this.utilsSvc.dismissModal({ success: true });
-      this.utilsSvc.presentToast({
-        message: 'Producto actualizado exitosamente',
+        message: 'Producto creado exitosamente',
         duration: 1500,
         color: 'success',
         position: 'middle',
         icon: 'checkmark-circle-outline'
       });
+      // Cerrar modal solo si el producto se registró con éxito
+      this.utilsSvc.dismissModal({ success: true });
     }).catch(error => {
       //console.log(error);
       this.utilsSvc.presentToast({
@@ -331,12 +296,126 @@ export class AddUpdateProductComponent implements OnInit {
     });
   }
 
+  //Editar producto
+  // 🧩 Editar producto con actualización correcta del publicId
+  async updateProduct() {
+    const connectionStatus = await this.checkConnection();
+    if (!connectionStatus) return;
+
+    const path = `usuarios/${this.user.uid}/productos/${this.product.id}`;
+    const selectedCategory = this.categorias.find(cat => cat.id === this.form.value.categoriaProducto);
+
+    if (selectedCategory) {
+      this.form.value.categoriaProducto = selectedCategory.nombre;
+    }
+
+    const nombreProducto = this.form.get('name').value;
+    const ProductoExistente = await this.firebaseSvc.getDocumentByField(
+      `usuarios/${this.user.uid}/productos`,
+      'name',
+      nombreProducto
+    );
+
+    if (ProductoExistente && ProductoExistente['id'] !== this.product.id) {
+      this.utilsSvc.presentToast({
+        message: 'Ya existe un producto con este nombre',
+        duration: 1500,
+        color: 'danger',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+      return;
+    }
+
+    // Si el producto es por unidades, elimina Peso, y viceversa
+    if (this.selectedProductType === 'unidades') {
+      delete this.form.value.Peso;
+    } else {
+      delete this.form.value.Cantidad;
+    }
+
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
+
+    try {
+      let newImageUrl = this.product.image;
+      let newPublicId = this.product.publicId;
+
+      // ⚙️ Si la imagen cambió, la reemplazamos
+      if (this.form.value.image !== this.product.image) {
+        // 1️⃣ Eliminar la imagen anterior de Cloudinary (si existe)
+        if (this.product.publicId) {
+          try {
+            await this.cloudinarySvc.deleteImage(this.product.publicId).toPromise();
+          } catch (err) {
+            console.warn('No se pudo eliminar la imagen anterior:', err);
+          }
+        }
+
+        // 2️⃣ Subir la nueva imagen
+        const dataUrl = this.form.value.image;
+        if (dataUrl) {
+          try {
+            const res: any = await this.cloudinarySvc.uploadImage(dataUrl).toPromise();
+            newImageUrl = res.secure_url;
+            newPublicId = res.public_id;
+          } catch (err) {
+            //console.error('Error subiendo nueva imagen:', err);
+            this.utilsSvc.presentToast({
+              message: 'Error al subir la nueva imagen',
+              duration: 1500,
+              color: 'danger',
+              position: 'middle',
+              icon: 'alert-circle-outline'
+            });
+          }
+        }
+      }
+
+      // 3️⃣ Preparamos los datos actualizados
+      this.cleanFormValues();
+      delete this.form.value.id;
+
+      const updatedData = {
+        ...this.form.value,
+        image: newImageUrl,
+        publicId: newPublicId, // ✅ actualizamos también el publicId
+        updatedAt: new Date()
+      };
+
+      // 4️⃣ Guardar cambios en Firestore
+      await this.firebaseSvc.updateDocument(path, updatedData);
+
+      this.utilsSvc.dismissModal({ success: true });
+      this.utilsSvc.presentToast({
+        message: 'Producto actualizado exitosamente',
+        duration: 1500,
+        color: 'success',
+        position: 'middle',
+        icon: 'checkmark-circle-outline'
+      });
+    } catch (error: any) {
+      //console.error(error);
+      this.utilsSvc.presentToast({
+        message: error.message || 'Error al actualizar el producto',
+        duration: 1500,
+        color: 'danger',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+
+
   ionViewWillEnter() {
     this.getCategorias();
   }
 
   getCategorias() {
-    
+
     let path = `usuarios/${this.user.uid}/categorias`;
     //let path = `categorias`;
 

@@ -79,7 +79,7 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "app:build",
+            "buildTarget": "app:build", 
             "host": "localhost",
             "port": 8100
           },

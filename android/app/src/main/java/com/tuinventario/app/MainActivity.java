@@ -1,4 +1,4 @@
-package com.inventariocarlos.app;
+package com.tuinventario.app;
 
 import com.getcapacitor.BridgeActivity;
 

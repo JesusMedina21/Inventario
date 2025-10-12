@@ -1,6 +1,6 @@
 # TuInventario
 
-Plataforma Web y Movil de control de Tu Inventario. El Frontend fue desarrollado en Ionic con Angular y desplegado en Vercel. Se utilizo Firebase como Backend a traves de sus funcionalidades de BaaS como autenticacion de usuarios, Base de datos NoSQL, recuperacion de emails y contraseñas, envios de emails etc...  
+Plataforma Web y Movil para el control de Tu Inventario. El Frontend fue desarrollado en Ionic con Angular y desplegado en Vercel. Se utilizo Firebase como Backend a traves de sus funcionalidades de BaaS (Backend as a Service) como autenticacion de usuarios, Base de datos NoSQL, recuperacion de emails y contraseñas, envios de emails etc... Se utilizo un mini backend serverless en express para la implementacion de almacenamiento de imagenes en Cloudinary 
 
 ## Funcionalidad
 

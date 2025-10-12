@@ -34,34 +34,63 @@ export class SignUpPage implements OnInit {
       const password = this.form.get('confirmpassword').value;
       const confirmPassword = this.form.get('password').value;
 
-      // Validar si las contraseñas coinciden
+      // ✅ Validar si las contraseñas coinciden
       if (password !== confirmPassword) {
-        this.form.setErrors({ passwordsNotMatch: true }); // Agregar error al formulario
-        return; // No continuar si las contraseñas no coinciden
+        this.form.setErrors({ passwordsNotMatch: true });
+        return;
       }
 
       const loading = await this.utilsSvc.loading();
       await loading.present();
 
-      this.firebaseSvc.signUp(this.form.value as User).then(async res => {
-        await this.firebaseSvc.updateUser(this.form.value.name);
-        let uid = res.user.uid;
-        this.form.controls.uid.setValue(uid);
-        this.setUserInfo(uid);
-      }).catch(error => {
-        //console.log(error);
-        this.utilsSvc.presentToast({
-          message: error.message,
-          duration: 1500,
-          color: 'danger',
-          position: 'middle',
-          icon: 'alert-circle-outline'
+      this.firebaseSvc.signUp(this.form.value as User)
+        .then(async res => {
+          // ✅ Obtener token
+          const token = await res.user.getIdToken();
+
+          // ✅ Crear objeto seguro del usuario
+          const userData = {
+            uid: res.user.uid,
+            email: res.user.email,
+            name: this.form.value.name,
+            token: token
+          };
+
+          // ✅ Guardar en Firestore
+          await this.firebaseSvc.setDocument(`usuarios/${res.user.uid}`, userData);
+
+          // ✅ Guardar en localStorage
+          this.utilsSvc.saveInLocalStorage('user', userData);
+
+          // ✅ Redirigir al home
+          this.utilsSvc.routerLink('/main/home');
+
+          // ✅ Mostrar mensaje de bienvenida
+          this.utilsSvc.presentToast({
+            message: `Bienvenido ${userData.name}`,
+            duration: 1500,
+            color: 'success',
+            position: 'middle',
+            icon: 'person-circle-outline'
+          });
+        })
+        .catch(error => {
+          //console.error(error);
+          this.utilsSvc.presentToast({
+            message: 'Error al crear la cuenta: ' + (error.message || ''),
+            duration: 2000,
+            color: 'danger',
+            position: 'middle',
+            icon: 'alert-circle-outline'
+          });
+        })
+        .finally(() => {
+          // ✅ Siempre cerrar el loading, ocurra lo que ocurra
+          loading.dismiss();
         });
-      }).finally(() => {
-        loading.dismiss();
-      });
     }
   }
+
 
   async setUserInfo(uid: string) {
     if (this.form.valid) {

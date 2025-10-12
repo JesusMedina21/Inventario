@@ -11,6 +11,7 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { CloudinaryService } from 'src/app/services/cloudinary.service';
 pdfMake.vfs = pdfFonts;
 
 @Component({
@@ -23,6 +24,7 @@ pdfMake.vfs = pdfFonts;
 export class HomePage implements OnInit {
   originalProducts: Product[] = [];
   firebaseSvc = inject(FirebaseService);
+  cloudinarySvc = inject(CloudinaryService);
   utilsSvc = inject(UtilsService);
   products: Product[] = [];
   loading: boolean = false;
@@ -668,51 +670,43 @@ export class HomePage implements OnInit {
 
   //Eliminar producto
   async deleteProduct(product: Product) {
-
-
     let path = `usuarios/${this.user().uid}/productos/${product.id}`;
-    //let path = `productos/${product.id}`
 
     const loading = await this.utilsSvc.loading();
     await loading.present();
 
+    // Obtener publicId desde tu producto (ej: "inventario/miimagen123")
+    const publicId = product.publicId;
 
+    this.cloudinarySvc.deleteImage(publicId).subscribe({
+      next: async () => {
+        await this.firebaseSvc.deleteDocument(path);
+        this.products = this.products.filter(p => p.id !== product.id);
 
-    let imagePath = await this.firebaseSvc.getFilePath(product.image);
-    await this.firebaseSvc.deleteFile(imagePath);
-
-    this.firebaseSvc.deleteDocument(path).then(async res => {
-
-      this.products = this.products.filter(p => p.id != product.id);
-
-      this.utilsSvc.presentToast({
-        message: 'Producto eliminado exitosamente',
-        duration: 1500,
-        color: 'success',
-        position: 'middle',
-        icon: 'checkmark-circle-outline'
-      })
-      //Codigo de error 
-
-
-    }).catch(error => {
-      //console.log(error);
-
-
-      this.utilsSvc.presentToast({
-        message: error.message,
-        duration: 1500,
-        color: 'danger',
-        position: 'middle',
-        icon: 'alert-circle-outline'
-      })
-      //Codigo de error 
-
-    }).finally(() => {
-      loading.dismiss();
-    })
-
+        this.utilsSvc.presentToast({
+          message: 'Producto eliminado exitosamente',
+          duration: 1500,
+          color: 'success',
+          position: 'middle',
+          icon: 'checkmark-circle-outline'
+        });
+      },
+      error: (err) => {
+        //console.error(err);
+        this.utilsSvc.presentToast({
+          message: 'Error al eliminar imagen',
+          duration: 1500,
+          color: 'danger',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      },
+      complete: () => {
+        loading.dismiss();
+      }
+    });
   }
+
 
   filterProducts() {
     if (this.searchTerm.trim() !== '') {

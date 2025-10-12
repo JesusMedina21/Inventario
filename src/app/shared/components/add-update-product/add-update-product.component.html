@@ -1,44 +1,44 @@
 <app-header [isModal]="true" [title]="product ? 'Actualizar Producto' : 'Agregar Producto'"></app-header>
 
 <ion-content>
-  
- 
-  
-  
-  <form [formGroup]="form" class="ion-padding ion-text-center" (ngSubmit)="submit()" (keypress.enter)="submit()" >
 
-  
-    
+
+
+
+  <form [formGroup]="form" class="ion-padding ion-text-center" (ngSubmit)="submit()" (keypress.enter)="submit()">
+
+
+
     <div [ngSwitch]="selectedProductType">
-      
-  
+
+
       <div *ngSwitchCase="'unidades'">
-  
+
         <h1 class="ion-text-center">Producto por Unidad</h1>
-         <!-----------------------------Mostrar imagen cuando existe------------------------>
+        <!-----------------------------Mostrar imagen cuando existe------------------------>
         <br>
-         <ion-avatar *ngIf="form.value.image">
+        <ion-avatar *ngIf="form.value.image">
           <img [src]="form.value.image" />
         </ion-avatar>
-  
+
         <!----------------------------- No Mostrar nada cuando la imagen no existe------------------------>
         <ion-icon class="image-icon" *ngIf="!form.value.image" name="image-outline"></ion-icon>
-          <!-----------------------------Tomar imagen------------------------>
+        <!-----------------------------Tomar imagen------------------------>
         <br>
         <ion-button (click)="takeImage()" mode="ios" size="small" shape="round">
           Agregar imagen
         </ion-button>
-      
+
         <br><br>
         <div *ngIf="!product" class="button-container">
           <ion-button color="success" (click)="changeProductType('unidades')">Unidades</ion-button>
           <ion-button (click)="changeProductType('granel')">Granel</ion-button>
         </div>
-    
+
         <p class="center-text" *ngIf="!product">El botón verde es el botón seleccionado</p>
 
 
-       <!-------------------------INGRESAR CODIGO DE BARRAS MANUALMENTE-----------------------
+        <!-------------------------INGRESAR CODIGO DE BARRAS MANUALMENTE-----------------------
 
      
        <app-custom-input [(ngModel)]="form.controls.codigo_barras.value" autocomplete="codigo_barras" type="text" label="Ingresar Codigo">
@@ -50,24 +50,20 @@
      </div>
 
      -------------->
-          <!---------------------------------Campo Nombre------------------------>
-      
-        <app-custom-input 
-          autocomplete="name" 
-          [control]="form.controls.name"
-          type="text"
-          label="Nombre">
+        <!---------------------------------Campo Nombre------------------------>
+
+        <app-custom-input autocomplete="name" [control]="form.controls.name" type="text" label="Nombre">
         </app-custom-input>
-    
+
         <div class="validators" *ngIf="form.controls.name.errors && form.controls.name.touched">
           <div *ngIf="form.controls.name.errors?.['required']">Este campo es requerido</div>
           <div *ngIf="form.controls.name.errors?.['minlength']">Este campo necesita minimo 3 caracteres</div>
         </div>
 
-        
+
 
         <!---------------------------------------------- Seleccion de selección de opciones ------------------->
-       
+
         <ion-item>
           <ion-select formControlName="categoriaProducto" placeholder="Selecciona una categoría">
             <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.nombre">
@@ -76,79 +72,67 @@
           </ion-select>
         </ion-item>
         <br>
-        <ion-text color="danger" *ngIf="form.get('categoriaProducto').hasError('required') && form.get('categoriaProducto').touched">
+        <ion-text color="danger"
+          *ngIf="form.get('categoriaProducto').hasError('required') && form.get('categoriaProducto').touched">
           Debes seleccionar una categoría.
         </ion-text>
 
-      
+
         <!---------------------------------Campo Precio------------------------>
-      
-        <app-custom-input 
-          [control]="form.controls.precio"
-          type="number"
-          label="Precio por Unidades"
+
+        <app-custom-input [control]="form.controls.precio" type="number" label="Precio por Unidades"
           (ionInput)="setNumberInputs()">
         </app-custom-input>
-        
+
         <div class="validators" *ngIf="form.controls.precio.errors && form.controls.precio.touched">
           <div *ngIf="form.controls.precio.errors?.['required']">Este campo no puede estar vacio</div>
-          <div *ngIf="form.controls.precio.errors?.['min']">Este campo tiene que ser superior que 0</div> 
+          <div *ngIf="form.controls.precio.errors?.['min']">Este campo tiene que ser superior que 0</div>
         </div>
-      
+
         <!---------------------------------Campo Cantidad----------------------->
-        
+
         <div *ngIf="!product">
 
-          <app-custom-input 
-            [control]="form.controls.Cantidad"
-            type="number"
-            label="Stock Actual en Unidades"
-            (ionInput)="setNumberInputs()"
-          ></app-custom-input>
-        
+          <app-custom-input [control]="form.controls.Cantidad" type="number" label="Stock Actual en Unidades"
+            (ionInput)="setNumberInputs()"></app-custom-input>
+
           <div class="validators" *ngIf="form.controls.Cantidad.errors && form.controls.Cantidad.touched">
-        
+
             <div *ngIf="form.controls.Cantidad.errors?.['required']">Este campo es requerido</div>
-        
+
           </div>
 
         </div>
-      
+
         <!---------------------------------Campo Stock_Min------------------------>
-        
-        <app-custom-input 
-          [control]="form.controls.stock_min"
-          type="number"
-          label="Stock Minimo en Unidades"
+
+        <app-custom-input [control]="form.controls.stock_min" type="number" label="Stock Minimo en Unidades"
           (ionInput)="setNumberInputs()">
-      
+
         </app-custom-input>
-      
+
         <div class="validators" *ngIf="form.controls.stock_min.errors && form.controls.stock_min.touched">
-      
+
           <div *ngIf="form.controls.stock_min.errors?.['required']">Este campo no puede estar vacio</div>
-          <div *ngIf="form.controls.stock_min.errors?.['min']">Este campo tiene que ser superior que 0</div> 
-         
+          <div *ngIf="form.controls.stock_min.errors?.['min']">Este campo tiene que ser superior que 0</div>
+
         </div>
-      
+
         <!---------------------------------Campo Stock_Max------------------------>
-        
-        <app-custom-input 
-          [control]="form.controls.stock_max"
-          type="number"
-          label="Stock Maximo en Unidades"
+
+        <app-custom-input [control]="form.controls.stock_max" type="number" label="Stock Maximo en Unidades"
           (ionInput)="setNumberInputs()">
-      
+
         </app-custom-input>
-    
+
         <div class="validators" *ngIf="form.controls.stock_max.errors && form.controls.stock_max.touched">
-      
+
           <div *ngIf="form.controls.stock_max.errors?.['required']">Este campo no puede estar vacio</div>
-          <div *ngIf="form.controls.stock_max.errors?.['min']">Este campo tiene que ser superior que 0</div> 
-         
+          <div *ngIf="form.controls.stock_max.errors?.['min']">Este campo tiene que ser superior que 0</div>
+
         </div>
-      
-        
+
+
       </div>
       <div *ngSwitchCase="'granel'">
 
@@ -157,28 +141,28 @@
         <ion-avatar *ngIf="form.value.image">
           <img [src]="form.value.image" />
         </ion-avatar>
-  
+
         <!----------------------------- No Mostrar nada cuando la imagen no existe------------------------>
         <ion-icon class="image-icon" *ngIf="!form.value.image" name="image-outline"></ion-icon>
-          <!-----------------------------Tomar imagen------------------------>
+        <!-----------------------------Tomar imagen------------------------>
         <br>
         <ion-button (click)="takeImage()" mode="ios" size="small" shape="round">
           Agregar imagen
         </ion-button>
 
-         <!-----------------------------------------BOTONES------------------------------------>
+        <!-----------------------------------------BOTONES------------------------------------>
 
 
         <br><br>
         <div *ngIf="!product" class="button-container">
           <ion-button (click)="changeProductType('unidades')">Unidades</ion-button>
-          <ion-button  color="success"  (click)="changeProductType('granel')">Granel</ion-button>
+          <ion-button color="success" (click)="changeProductType('granel')">Granel</ion-button>
         </div>
 
         <p class="center-text" *ngIf="!product">El botón verde es el botón seleccionado</p>
 
-          
-       <!-------------------------INGRESAR CODIGO DE BARRAS MANUALMENTE-----------------------
+
+        <!-------------------------INGRESAR CODIGO DE BARRAS MANUALMENTE-----------------------
      
        <app-custom-input 
   autocomplete="codigo_barras" 
@@ -193,24 +177,20 @@
 -------------->
 
 
-          <!---------------------------------Campo Nombre------------------------>
-      
-        <app-custom-input 
-          autocomplete="name" 
-          [control]="form.controls.name"
-          type="text"
-          label="Nombre">
+        <!---------------------------------Campo Nombre------------------------>
+
+        <app-custom-input autocomplete="name" [control]="form.controls.name" type="text" label="Nombre">
         </app-custom-input>
-    
+
         <div class="validators" *ngIf="form.controls.name.errors && form.controls.name.touched">
           <div *ngIf="form.controls.name.errors?.['required']">Este campo es requerido</div>
           <div *ngIf="form.controls.name.errors?.['minlength']">Este campo necesita minimo 3 caracteres</div>
         </div>
 
-          <!---------------------------------------------- Seleccion de selección de opciones ------------------->
-   
+        <!---------------------------------------------- Seleccion de selección de opciones ------------------->
+
         <ion-item>
-          
+
           <ion-select formControlName="categoriaProducto" placeholder="Selecciona una categoría">
             <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.nombre">
               Categoria: {{ categoria.nombre }}
@@ -219,89 +199,77 @@
         </ion-item>
         <br>
 
-        <ion-text color="danger" *ngIf="form.get('categoriaProducto').hasError('required') && form.get('categoriaProducto').touched">
+        <ion-text color="danger"
+          *ngIf="form.get('categoriaProducto').hasError('required') && form.get('categoriaProducto').touched">
           Debes seleccionar una categoría.
         </ion-text>
-  
+
 
         <!---------------------------------Campo Precio------------------------>
-      
-        <app-custom-input 
-          [control]="form.controls.precio"
-          type="number"
-          label="Precio por Gramos"
+
+        <app-custom-input [control]="form.controls.precio" type="number" label="Precio por Gramos"
           (ionInput)="setNumberInputs()">
-      
+
         </app-custom-input>
-      
+
         <div class="validators" *ngIf="form.controls.precio.errors && form.controls.precio.touched">
           <div *ngIf="form.controls.precio.errors?.['required']">Este campo no puede estar vacio</div>
-          <div *ngIf="form.controls.precio.errors?.['min']">Este campo tiene que ser superior que 0</div> 
+          <div *ngIf="form.controls.precio.errors?.['min']">Este campo tiene que ser superior que 0</div>
         </div>
-    
-          <!-------------------------------Campo Peso---------------------------------->
+
+        <!-------------------------------Campo Peso---------------------------------->
         <div *ngIf="!product">
-          <app-custom-input
-            [control]="form.controls.Peso"
-            type="number"
-            label="Stock Actual En Gramos"
+          <app-custom-input [control]="form.controls.Peso" type="number" label="Stock Actual En Gramos"
             (ionInput)="setNumberInputs()">
           </app-custom-input>
-  
+
           <div class="validators" *ngIf="form.controls.Peso.errors && form.controls.Peso.touched">
             <div *ngIf="form.controls.Peso.errors?.['required']">Este campo no puede estar vacio</div>
-            <div *ngIf="form.controls.Peso.errors?.['min']">Este campo tiene que ser superior que 0</div> 
+            <div *ngIf="form.controls.Peso.errors?.['min']">Este campo tiene que ser superior que 0</div>
           </div>
         </div>
 
 
         <!---------------------------------Campo Stock_Min------------------------>
-        
-        <app-custom-input 
-          [control]="form.controls.stock_min"
-          type="number"
-          label="Stock Minimo en Gramos"
+
+        <app-custom-input [control]="form.controls.stock_min" type="number" label="Stock Minimo en Gramos"
           (ionInput)="setNumberInputs()">
-      
+
         </app-custom-input>
-      
+
         <div class="validators" *ngIf="form.controls.stock_min.errors && form.controls.stock_min.touched">
-      
+
           <div *ngIf="form.controls.stock_min.errors?.['required']">Este campo no puede estar vacio</div>
 
-          <div *ngIf="form.controls.stock_min.errors?.['min']">Este campo tiene que ser superior que 0</div> 
-         
+          <div *ngIf="form.controls.stock_min.errors?.['min']">Este campo tiene que ser superior que 0</div>
+
         </div>
-      
+
         <!---------------------------------Campo Stock_Max------------------------>
-        
-        <app-custom-input 
-          [control]="form.controls.stock_max"
-          type="number"
-          label="Stock Maximo en Gramos"
+
+        <app-custom-input [control]="form.controls.stock_max" type="number" label="Stock Maximo en Gramos"
           (ionInput)="setNumberInputs()">
-      
+
         </app-custom-input>
-    
+
         <div class="validators" *ngIf="form.controls.stock_max.errors && form.controls.stock_max.touched">
-      
+
           <div *ngIf="form.controls.stock_max.errors?.['required']">Este campo no puede estar vacio</div>
-          <div *ngIf="form.controls.stock_max.errors?.['min']">Este campo tiene que ser superior que 0</div> 
-         
+          <div *ngIf="form.controls.stock_max.errors?.['min']">Este campo tiene que ser superior que 0</div>
+
         </div>
-      
-       
+
+
       </div>
     </div>
-    
-  
-    <ion-button mode="md" class="ion-margin" type="submit" [disabled]="isSubmitting" [disabled]="form.invalid" >
+
+
+    <ion-button mode="md" class="ion-margin" type="submit" [disabled]="isSubmitting" [disabled]="form.invalid">
       {{product ? 'Actualizar producto' : 'Agregar Producto'}}
-      <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon> 
+      <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
     </ion-button>
 
-  </form> 
-<br><br><br><br><br><br>
+  </form>
+  <br><br><br><br><br><br>
 
 </ion-content>
-

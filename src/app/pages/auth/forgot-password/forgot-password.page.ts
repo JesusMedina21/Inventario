@@ -51,7 +51,7 @@ export class ForgotPasswordPage implements OnInit {
         await this.firebaseSvc.sendRecoveryEmail(email);
 
         this.utilsSvc.presentToast({
-          message: 'Correo de recuperación enviado con éxito',
+          message: 'Correo de recuperación enviado con éxito (REVISA EN SPAM)',
           duration: 1500,
           color: 'success',
           position: 'middle',
@@ -62,7 +62,7 @@ export class ForgotPasswordPage implements OnInit {
         this.form.reset();
 
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         this.utilsSvc.presentToast({
           message: 'Error al procesar la solicitud',
           duration: 1500,

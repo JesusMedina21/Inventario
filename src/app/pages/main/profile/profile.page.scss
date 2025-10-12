@@ -20,4 +20,29 @@ ion-item{
 .empty-icon{
     font-size: 140px;
     opacity: 30%;
+
+}/* En tu archivo CSS */
+.responsive-buttons {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* O usando clases de breakpoint */
+@media (min-width: 768px) {
+  .responsive-buttons {
+    width: 75%;
+  }
+}
+
+@media (min-width: 992px) {
+  .responsive-buttons {
+    width: 50%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .responsive-buttons {
+    width: 35%;
+  }
 }

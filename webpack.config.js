@@ -10,6 +10,10 @@ module.exports = {
       FIREBASE_STORAGE_BUCKET: JSON.stringify(process.env.FIREBASE_STORAGE_BUCKET),
       FIREBASE_MESSAGING_SENDER_ID: JSON.stringify(process.env.FIREBASE_MESSAGING_SENDER_ID),
       FIREBASE_APP_ID: JSON.stringify(process.env.FIREBASE_APP_ID),
+      CLOUDINARY_CLOUD_NAME: JSON.stringify(process.env.CLOUDINARY_CLOUD_NAME),
+      CLOUDINARY_UPLOAD_PRESET: JSON.stringify(process.env.CLOUDINARY_UPLOAD_PRESET),
+      CLOUDINARY_FOLDER: JSON.stringify(process.env.CLOUDINARY_FOLDER),
+      CLOUDINARY_FOLDER_PROFILE: JSON.stringify(process.env.CLOUDINARY_FOLDER_PROFILE)
     })
   ],
   resolve: {

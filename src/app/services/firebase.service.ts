@@ -32,7 +32,7 @@ export class FirebaseService {
       window.dispatchEvent(new Event('userAuthStateChanged'));
       this.utilsSvc.routerLink('/');
     }).catch(error => {
-      console.error('Error al cerrar sesión:', error);
+      //console.error('Error al cerrar sesión:', error);
     });
   }
 
@@ -121,7 +121,7 @@ export class FirebaseService {
 
       return !querySnapshot.empty;
     } catch (error) {
-      console.error('Error checking email:', error);
+      //console.error('Error checking email:', error);
       return false;
     }
   }

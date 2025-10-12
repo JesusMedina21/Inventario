@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">Inventario</string>
     <string name="title_activity_main">Inventario</string>
-    <string name="package_name">com.inventariocarlos.app</string>
-    <string name="custom_url_scheme">com.inventariocarlos.app</string>
+    <string name="package_name">com.tuinventario.app</string>
+    <string name="custom_url_scheme">com.tuinventario.app</string>
 </resources>
