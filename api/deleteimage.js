@@ -27,12 +27,15 @@ export default async function handler(req, res) {
     if (!publicId) {
       return res.status(400).json({ message: "Falta el publicId" });
     }
-    //console.log("CLOUDINARY CONFIG:", {
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY ? "OK" : "MISSING",
-      api_secret: process.env.CLOUDINARY_API_SECRET ? "OK" : "MISSING",
-      publicId
-    });
+    //console.log
+    (
+      "CLOUDINARY CONFIG:",
+      {
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY ? "OK" : "MISSING",
+        api_secret: process.env.CLOUDINARY_API_SECRET ? "OK" : "MISSING",
+        publicId
+      });
 
     const result = await cloudinary.uploader.destroy(publicId);
     return res.status(200).json({ message: "Imagen eliminada", result });
