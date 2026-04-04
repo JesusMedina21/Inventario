@@ -163,7 +163,19 @@ export class CategoriaPage implements OnInit {
 
   //Eliminar producto
   async deleteCategoria(categoria: Categoria) {
+    const productoPath = `usuarios/${this.user().uid}/productos`;
+    const productosAsociados = await this.firebaseSvc.countDocumentsByField(productoPath, 'categoriaProducto', categoria.nombre);
 
+    if (productosAsociados > 0) {
+      this.utilsSvc.presentToast({
+        message: 'Esa categoría no se puede eliminar porque tiene productos asociados a ella',
+        duration: 2000,
+        color: 'danger',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+      return;
+    }
 
     let path = `usuarios/${this.user().uid}/categorias/${categoria.id}`;
     //let path = `categorias/${categoria.id}`
@@ -171,40 +183,27 @@ export class CategoriaPage implements OnInit {
     const loading = await this.utilsSvc.loading();
     await loading.present();
 
-
-
-
     this.firebaseSvc.deleteDocument(path).then(async res => {
-
       this.categorias = this.categorias.filter(p => p.id != categoria.id);
 
       this.utilsSvc.presentToast({
-        message: 'Categoria eliminada exitosamente',
+        message: 'Categoría eliminada exitosamente',
         duration: 1500,
         color: 'success',
         position: 'middle',
         icon: 'checkmark-circle-outline'
-      })
-      //Codigo de error 
-
-
+      });
     }).catch(error => {
-      //console.log(error);
-
-
       this.utilsSvc.presentToast({
         message: error.message,
         duration: 1500,
         color: 'danger',
         position: 'middle',
         icon: 'alert-circle-outline'
-      })
-      //Codigo de error 
-
+      });
     }).finally(() => {
       loading.dismiss();
-    })
-
+    });
   }
 
 

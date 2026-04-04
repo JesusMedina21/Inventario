@@ -130,6 +130,13 @@ export class FirebaseService {
     await batch.commit();
   }
 
+  async countDocumentsByField(collectionPath: string, fieldName: string, value: any) {
+    const collectionRef = collection(getFirestore(), collectionPath);
+    const queryRef = query(collectionRef, where(fieldName, '==', value));
+    const querySnapshot = await getDocs(queryRef);
+    return querySnapshot.size;
+  }
+
   async checkEmailExists(email: string): Promise<boolean> {
     try {
       const usersRef = collection(getFirestore(), 'usuarios');
