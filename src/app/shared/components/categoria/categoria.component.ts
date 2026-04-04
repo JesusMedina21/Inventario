@@ -122,12 +122,12 @@ export class CategoriaComponent implements OnInit {
 
   // Actualizar categoría
   async updateCategoria() {
-    let path = `usuarios/${this.user.uid}/categorias/${this.categoria.id}`;
-    //let path = `categorias/${this.categoria.id}`;
+    const path = `usuarios/${this.user.uid}/categorias/${this.categoria.id}`;
+    const collectionPath = `usuarios/${this.user.uid}/categorias`;
     const loading = await this.utilsSvc.loading();
     await loading.present();
     const nombreCategoria = this.form.get('nombre').value;
-    const categoriaExistente = await this.firebaseSvc.getDocumentByField('categorias', 'nombre', nombreCategoria);
+    const categoriaExistente = await this.firebaseSvc.getDocumentByField(collectionPath, 'nombre', nombreCategoria);
     if (categoriaExistente && categoriaExistente['id'] !== this.categoria.id) {
       this.utilsSvc.presentToast({
         message: 'Ya existe una categoría con este nombre',
@@ -140,7 +140,21 @@ export class CategoriaComponent implements OnInit {
       this.isSubmitting = false; // Restablecer el estado
       return;
     }
-    this.firebaseSvc.updateDocument(path, this.form.value).then(async res => {
+    const oldNombreCategoria = this.categoria.nombre;
+    const newNombreCategoria = nombreCategoria;
+
+    try {
+      await this.firebaseSvc.updateDocument(path, this.form.value);
+
+      if (oldNombreCategoria !== newNombreCategoria) {
+        await this.firebaseSvc.updateDocumentsByField(
+          `usuarios/${this.user.uid}/productos`,
+          'categoriaProducto',
+          oldNombreCategoria,
+          { categoriaProducto: newNombreCategoria }
+        );
+      }
+
       this.utilsSvc.presentToast({
         message: 'Categoría actualizada exitosamente',
         duration: 1500,
@@ -149,18 +163,17 @@ export class CategoriaComponent implements OnInit {
         icon: 'checkmark-circle-outline'
       });
       this.utilsSvc.dismissModal({ success: true });
-    }).catch(error => {
-      //console.log(error);
+    } catch (error: any) {
       this.utilsSvc.presentToast({
-        message: error.message,
+        message: error.message || 'Error al actualizar la categoría',
         duration: 1500,
         color: 'danger',
         position: 'middle',
         icon: 'alert-circle-outline'
       });
-    }).finally(() => {
+    } finally {
       loading.dismiss();
       this.isSubmitting = false; // Restablecer el estado
-    });
+    }
   }
 }

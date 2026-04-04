@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc, getDoc, addDoc, collection, collectionData, query, updateDoc, deleteDoc, where, getDocs } from '@angular/fire/firestore';
+import { getFirestore, setDoc, doc, getDoc, addDoc, collection, collectionData, query, updateDoc, deleteDoc, where, getDocs, writeBatch } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { getStorage, uploadString, ref, getDownloadURL, deleteObject } from 'firebase/storage';
@@ -113,6 +113,23 @@ export class FirebaseService {
       return null;
     }
   }
+
+  async updateDocumentsByField(collectionPath: string, fieldName: string, value: any, updateData: any) {
+    const collectionRef = collection(getFirestore(), collectionPath);
+    const queryRef = query(collectionRef, where(fieldName, '==', value));
+    const querySnapshot = await getDocs(queryRef);
+
+    if (querySnapshot.empty) return;
+
+    const batch = writeBatch(getFirestore());
+    querySnapshot.docs.forEach(docSnap => {
+      const docRef = doc(getFirestore(), collectionPath, docSnap.id);
+      batch.update(docRef, updateData);
+    });
+
+    await batch.commit();
+  }
+
   async checkEmailExists(email: string): Promise<boolean> {
     try {
       const usersRef = collection(getFirestore(), 'usuarios');
